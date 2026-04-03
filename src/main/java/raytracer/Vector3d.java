@@ -9,10 +9,6 @@ public class Vector3d {
         this.z = z;
     }
 
-    public Vector3d getVector(){
-        return this;
-    }
-
     public Vector3d plus(Vector3d other){
         return new Vector3d(
                 this.x + other.x,

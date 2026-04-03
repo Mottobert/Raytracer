@@ -22,6 +22,8 @@ public class Raytracer extends JFrame {
                         double y = (1 - 2*y_ndc);
                         // TODO:
                         // - Strahl erzeugen
+                        Vector3d normalizedDirection = new Vector3d(x, y, 0).minus(camera).normalized();
+                        Ray ray = new Ray(camera, normalizedDirection);
                         // - Strahl gegen Objekt(e) testen
                         // - Pixel ggf. einfaerben
                     }
