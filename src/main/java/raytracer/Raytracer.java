@@ -7,10 +7,11 @@ import java.awt.Graphics;
 public class Raytracer extends JFrame {
 
     public Raytracer() {
-        var panel = new JPanel() {
+        JPanel panel = new JPanel() {
             @Override public void paint(Graphics g) {
                 // TODO:
                 // - Cameraposition erstellen
+                Vector3d camera = new Vector3d(0, 0, -1);
                 // - Objekt(e) erstellen
                 // - Lichtquelle erstellen
                 for(int y_wnd = 0; y_wnd < getHeight(); y_wnd++) {
