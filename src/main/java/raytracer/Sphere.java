@@ -3,10 +3,12 @@ package raytracer;
 public class Sphere {
     Vector3d center;
     double radius;
+    Material material;
 
-    public Sphere(Vector3d center, double radius){
+    public Sphere(Vector3d center, double radius, Material material){
         this.center = center;
         this.radius = radius;
+        this.material = material;
     }
 
     public double intersection(Ray ray){
@@ -32,6 +34,17 @@ public class Sphere {
 
     public Vector3d normal(Vector3d p){
         return p.minus(this.center).scaled(1/this.radius);
+    }
+
+    public Color diffuseShading(Vector3d p, Light lightSource){
+        Vector3d l = lightSource.position.minus(p).normalized();
+        double iDiffuse = Math.max(0, normal(p).dot(l));
+
+        Color color = this.material.kDiffuse;
+
+        Color kDiffuse = new Color(color.r * iDiffuse, color.g * iDiffuse, color.b * iDiffuse);
+
+        return kDiffuse;
     }
 
     public String toString(){
