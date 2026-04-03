@@ -2,6 +2,7 @@ package raytracer;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Graphics;
 
 public class Raytracer extends JFrame {
@@ -13,6 +14,7 @@ public class Raytracer extends JFrame {
                 // - Cameraposition erstellen
                 Vector3d camera = new Vector3d(0, 0, -1);
                 // - Objekt(e) erstellen
+                Sphere sphere = new Sphere(new Vector3d(0,0,1), 1);
                 // - Lichtquelle erstellen
                 for(int y_wnd = 0; y_wnd < getHeight(); y_wnd++) {
                     for(int x_wnd = 0; x_wnd < getWidth(); x_wnd++) {
@@ -25,7 +27,12 @@ public class Raytracer extends JFrame {
                         Vector3d normalizedDirection = new Vector3d(x, y, 0).minus(camera).normalized();
                         Ray ray = new Ray(camera, normalizedDirection);
                         // - Strahl gegen Objekt(e) testen
+                        double t = sphere.intersection(ray);
                         // - Pixel ggf. einfaerben
+                        if(t >= 0){
+                            g.setColor(Color.BLACK);
+                            g.fillRect(x_wnd, y_wnd, 1, 1);
+                        }
                     }
                 }
                 System.out.println("Done !");
