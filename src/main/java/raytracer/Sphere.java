@@ -30,6 +30,10 @@ public class Sphere {
         }
     }
 
+    public Vector3d normal(Vector3d p){
+        return p.minus(this.center).scaled(1/this.radius);
+    }
+
     public String toString(){
         return this.center.toString() + " " + this.radius;
     }

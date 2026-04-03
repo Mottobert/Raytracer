@@ -16,6 +16,7 @@ public class Raytracer extends JFrame {
                 // - Objekt(e) erstellen
                 Sphere sphere = new Sphere(new Vector3d(0,0,1), 1);
                 // - Lichtquelle erstellen
+                Light light = new Light(new Vector3d(0,2,-1));
                 for(int y_wnd = 0; y_wnd < getHeight(); y_wnd++) {
                     for(int x_wnd = 0; x_wnd < getWidth(); x_wnd++) {
                         double x_ndc = (x_wnd + 0.5) / getWidth();
