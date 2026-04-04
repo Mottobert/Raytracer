@@ -10,7 +10,7 @@ class SphereTest {
 
     @Test
     void testConstructor() {
-        Material material = new Material(new Color(1,1,1), 1);
+        Material material = new Material(new Color(1,1,1), 1, 100);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
 
         assertEquals("(0.0, 0.0, 1.0) 1.0", sphere.toString());
@@ -18,7 +18,7 @@ class SphereTest {
 
     @Test
     void testIntersection() {
-        Material material = new Material(new Color(1,1,1), 1);
+        Material material = new Material(new Color(1,1,1), 1, 100);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0,1));
 
@@ -28,7 +28,7 @@ class SphereTest {
 
     @Test
     void testIntersection2() {
-        Material material = new Material(new Color(1,1,1), 1);
+        Material material = new Material(new Color(1,1,1), 1, 100);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray2 = new Ray(new Vector3d(0,0,-1), new Vector3d(0,1,1).normalized());
 
@@ -37,7 +37,7 @@ class SphereTest {
 
     @Test
     void testIntersection3() {
-        Material material = new Material(new Color(1,1,1), 1);
+        Material material = new Material(new Color(1,1,1), 1, 100);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray3 = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0.5,1).normalized());
 
@@ -46,12 +46,25 @@ class SphereTest {
 
     @Test
     void testUv() {
-        Material material = new Material(new Color(1,1,1), 1);
+        Material material = new Material(new Color(1,1,1), 1, 100);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0,1).normalized());
 
         double[] uv = sphere.makeUVs(sphere.normal(ray.at(sphere.intersection(ray))));
 
         assertEquals("[-0.25, 0.5]", Arrays.toString(uv));
+    }
+
+    @Test
+    void testTexture() {
+        CheckeredMaterial material = new CheckeredMaterial(new Color(0,1,0), 0.5, 100, new Color(1,0,1), 16, 8);
+        Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
+        Ray ray = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0,1).normalized());
+
+        double[] uv = sphere.makeUVs(sphere.normal(ray.at(sphere.intersection(ray))));
+
+        sphere.material.getDiffuseColor(uv[0], uv[1]);
+
+        assertEquals("(0.0, 1.0, 0.0)", sphere.material.getDiffuseColor(uv[0], uv[1]).toString());
     }
 }

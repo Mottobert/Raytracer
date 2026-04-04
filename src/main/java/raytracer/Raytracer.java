@@ -13,7 +13,7 @@ public class Raytracer extends JFrame {
                 // - Cameraposition erstellen
                 Vector3d camera = new Vector3d(0, 0, -1);
                 // - Objekt(e) erstellen
-                Material material = new Material(new raytracer.Color(0,1,1), 1);
+                CheckeredMaterial material = new CheckeredMaterial(new Color(0,1,0), 0.5, 100, new Color(1,0,1), 16, 8);
                 Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
                 // - Lichtquelle erstellen
                 Light light = new Light(new Vector3d(0,2,-1));

@@ -39,7 +39,9 @@ public class Sphere {
     public Color diffuseShading(Vector3d normal, Vector3d light){
         double iDiffuse = Math.max(0, normal.dot(light));
 
-        Color color = this.material.kDiffuse;
+        double[] uv = this.makeUVs(normal);
+
+        Color color = this.material.getDiffuseColor(uv[0], uv[1]);
 
         Color kDiffuse = new Color(color.r * iDiffuse, color.g * iDiffuse, color.b * iDiffuse);
 
@@ -48,7 +50,7 @@ public class Sphere {
 
     public Color specularShading(Vector3d normal, Vector3d light, Vector3d view){
         Vector3d r = light.reflect(normal);
-        double shininess = 100;
+        double shininess = this.material.shininess;
         double iSpecular = Math.pow(Math.max(0, -r.dot(view)), shininess);
 
         double kSpecular = this.material.kSpecular;
