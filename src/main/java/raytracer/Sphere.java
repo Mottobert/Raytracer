@@ -66,6 +66,13 @@ public class Sphere {
         return new Color(dColor.r + sColor.r, dColor.g + sColor.g, dColor.b + sColor.b);
     }
 
+    public double[] makeUVs(Vector3d normal){
+        double theta = Math.atan2(normal.z, normal.x);
+        double rho = Math.acos(-normal.y);
+
+        return new double[]{theta/(2*Math.PI), rho/Math.PI};
+    }
+
     public String toString(){
         return this.center.toString() + " " + this.radius;
     }
