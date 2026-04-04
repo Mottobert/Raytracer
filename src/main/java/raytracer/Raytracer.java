@@ -13,7 +13,7 @@ public class Raytracer extends JFrame {
                 // - Cameraposition erstellen
                 Vector3d camera = new Vector3d(0, 0, -1);
                 // - Objekt(e) erstellen
-                Material material = new Material(new raytracer.Color(0,1,1));
+                Material material = new Material(new raytracer.Color(0,1,1), 1);
                 Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
                 // - Lichtquelle erstellen
                 Light light = new Light(new Vector3d(0,2,-1));
@@ -32,7 +32,7 @@ public class Raytracer extends JFrame {
                         // - Pixel ggf. einfaerben
                         if(t >= 0){
                             Vector3d p = ray.at(t);
-                            g.setColor(sphere.diffuseShading(p, light).toAwtColor());
+                            g.setColor(sphere.shading(p, light, ray.direction).toAwtColor());
                             g.fillRect(x_wnd, y_wnd, 1, 1);
                         }
                     }

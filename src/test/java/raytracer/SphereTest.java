@@ -7,7 +7,7 @@ class SphereTest {
 
     @Test
     void testConstructor() {
-        Material material = new Material(new Color(1,1,1));
+        Material material = new Material(new Color(1,1,1), 1);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
 
         assertEquals("(0.0, 0.0, 1.0) 1.0", sphere.toString());
@@ -15,7 +15,7 @@ class SphereTest {
 
     @Test
     void testIntersection() {
-        Material material = new Material(new Color(1,1,1));
+        Material material = new Material(new Color(1,1,1), 1);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0,1));
 
@@ -25,7 +25,7 @@ class SphereTest {
 
     @Test
     void testIntersection2() {
-        Material material = new Material(new Color(1,1,1));
+        Material material = new Material(new Color(1,1,1), 1);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray2 = new Ray(new Vector3d(0,0,-1), new Vector3d(0,1,1).normalized());
 
@@ -34,7 +34,7 @@ class SphereTest {
 
     @Test
     void testIntersection3() {
-        Material material = new Material(new Color(1,1,1));
+        Material material = new Material(new Color(1,1,1), 1);
         Sphere sphere = new Sphere(new Vector3d(0,0,1), 1, material);
         Ray ray3 = new Ray(new Vector3d(0,0,-1), new Vector3d(0,0.5,1).normalized());
 

@@ -80,4 +80,12 @@ class Vector3dTest {
 
         assertEquals("(2.0, 2.0, 2.0)", e.toString());
     }
+
+    @Test
+    void testReflect() {
+        Vector3d n = new Vector3d(0, 1, 0);
+        Vector3d l = new Vector3d(-1, 1, 0).normalized();
+
+        assertEquals("(0.7071067811865475, 0.7071067811865475, 0.0)", l.reflect(n).toString());
+    }
 }

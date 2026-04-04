@@ -36,15 +36,34 @@ public class Sphere {
         return p.minus(this.center).scaled(1/this.radius);
     }
 
-    public Color diffuseShading(Vector3d p, Light lightSource){
-        Vector3d l = lightSource.position.minus(p).normalized();
-        double iDiffuse = Math.max(0, normal(p).dot(l));
+    public Color diffuseShading(Vector3d normal, Vector3d light){
+        double iDiffuse = Math.max(0, normal.dot(light));
 
         Color color = this.material.kDiffuse;
 
         Color kDiffuse = new Color(color.r * iDiffuse, color.g * iDiffuse, color.b * iDiffuse);
 
         return kDiffuse;
+    }
+
+    public Color specularShading(Vector3d normal, Vector3d light, Vector3d view){
+        Vector3d r = light.reflect(normal);
+        double shininess = 100;
+        double iSpecular = Math.pow(Math.max(0, -r.dot(view)), shininess);
+
+        double kSpecular = this.material.kSpecular;
+
+        return new Color(kSpecular * iSpecular, kSpecular * iSpecular,kSpecular * iSpecular);
+    }
+
+    public Color shading(Vector3d p, Light lightSource, Vector3d view){
+        Vector3d normal = normal(p);
+        Vector3d light = lightSource.position.minus(p).normalized();
+
+        Color dColor = diffuseShading(normal, light);
+        Color sColor = specularShading(normal, light, view);
+
+        return new Color(dColor.r + sColor.r, dColor.g + sColor.g, dColor.b + sColor.b);
     }
 
     public String toString(){

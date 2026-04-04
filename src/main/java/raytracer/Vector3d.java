@@ -51,6 +51,11 @@ public class Vector3d {
         );
     }
 
+    public Vector3d reflect(Vector3d n){
+        double dot = this.dot(n);
+        return n.scaled(2 * dot).minus(this);
+    }
+
     public String toString(){
         return "(" + this.x + ", " + this.y + ", " + this.z + ")";
     }
