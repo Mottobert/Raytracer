@@ -3,9 +3,11 @@ package raytracer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Raytracer extends JFrame {
-    Color raytrace(Ray ray, java.util.List<Sphere> objects, Light light){
+    Color raytrace(Ray ray, List<Sphere> objects, Light light){
         Sphere intersectionObject = null;
         double tMin = Double.MAX_VALUE;
 
@@ -21,8 +23,27 @@ public class Raytracer extends JFrame {
             return new Color(0, 0, 0.92);
         } else {
             Vector3d p = ray.at(tMin);
-            return intersectionObject.shading(p, light, ray.direction);
+
+            // Check if point is in shadow
+            if(inShadow(p, objects, light)){
+                return new Color(0, 0, 0);
+            } else {
+                return intersectionObject.shading(p, light, ray.direction);
+            }
         }
+    }
+
+    boolean inShadow(Vector3d p, List<Sphere> objects, Light light){
+        Vector3d l = light.position.minus(p).normalized();
+        Ray shadowRay = new Ray(p, l);
+
+        for(Sphere object : objects){
+            if(object.intersection(shadowRay) >= 0){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Raytracer() {
@@ -33,7 +54,7 @@ public class Raytracer extends JFrame {
                 Vector3d camera = new Vector3d(0, 0, -1);
 
                 // - Objekt(e) erstellen
-                java.util.List<Sphere> objects = new java.util.ArrayList<Sphere>();
+                List<Sphere> objects = new ArrayList<Sphere>();
                 CheckeredMaterial checkeredMaterial = new CheckeredMaterial(new Color(0,1,0), 0.5, 100,
                         new Color(1,0,1), 16, 8);
                 Sphere sphere = new Sphere(new Vector3d(0,0,1), 0.5, checkeredMaterial);

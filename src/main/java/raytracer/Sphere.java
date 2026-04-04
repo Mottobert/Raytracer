@@ -20,15 +20,20 @@ public class Sphere {
 
         if(root < 0) return -1;
 
+        double epsilon = 0.000001;
         double t1 = -b - Math.sqrt(root);
 
-        if(t1 >= 0) {
+        if(t1 > epsilon) {
             return t1;
         }
         else{
             double t2 = -b + Math.sqrt(root);
 
-            return t2;
+            if(t2 > epsilon){
+                return t2;
+            } else {
+                return -1;
+            }
         }
     }
 
@@ -59,11 +64,11 @@ public class Sphere {
     }
 
     public Color shading(Vector3d p, Light lightSource, Vector3d view){
-        Vector3d normal = normal(p);
-        Vector3d light = lightSource.position.minus(p).normalized();
+        Vector3d n = normal(p);
+        Vector3d l = lightSource.position.minus(p).normalized();
 
-        Color dColor = diffuseShading(normal, light);
-        Color sColor = specularShading(normal, light, view);
+        Color dColor = diffuseShading(n, l);
+        Color sColor = specularShading(n, l, view);
 
         return new Color(dColor.r + sColor.r, dColor.g + sColor.g, dColor.b + sColor.b);
     }
