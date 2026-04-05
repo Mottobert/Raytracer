@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Raytracer extends JFrame {
-    Color raytrace(Ray ray, List<Sphere> objects, Light light){
+    Color recursiveRaytrace(Ray ray, List<Sphere> objects, Light light, int depth){
+        if(depth == 0){
+            return new Color(0, 0, 0);
+        }
+
         Sphere intersectionObject = null;
         double tMin = Double.MAX_VALUE;
 
@@ -20,16 +24,29 @@ public class Raytracer extends JFrame {
         }
 
         if(intersectionObject == null){
-            return new Color(0, 0, 0.92);
+            return new Color(0, 0, 0.92); // background color
         } else {
+            Color color = new Color(0, 0, 0);
             Vector3d p = ray.at(tMin);
 
-            // Check if point is in shadow
-            if(inShadow(p, objects, light)){
-                return new Color(0, 0, 0);
-            } else {
-                return intersectionObject.shading(p, light, ray.direction);
+            // If point is in shadow color stays at black
+            // If point is not in shadow we calculate the color
+            if(!inShadow(p, objects, light)){
+                color = intersectionObject.shading(p, light, ray.direction);
             }
+
+            Vector3d d = ray.direction.normalized();
+            Vector3d n = intersectionObject.normal(p).normalized();
+
+            Vector3d dReflected = d.minus(n.scaled(2 * d.dot(n)));
+
+            Ray reflected = new Ray(p, dReflected);
+
+            Color recursiveColor = recursiveRaytrace(reflected, objects, light, depth - 1);
+            recursiveColor = recursiveColor.scaled(intersectionObject.material.kSpecular);
+            color = color.plus(recursiveColor);
+
+            return color;
         }
     }
 
@@ -82,7 +99,7 @@ public class Raytracer extends JFrame {
                         Ray ray = new Ray(camera, normalizedDirection);
 
                         // - Strahl gegen Objekt(e) testen
-                        Color c = raytrace(ray, objects, light);
+                        Color c = recursiveRaytrace(ray, objects, light, 5);
 
                         // - Pixel ggf. einfaerben
                         g.setColor(c.toAwtColor());
