@@ -47,33 +47,37 @@ public class Raytracer extends JFrame {
             double brokenRay = dRefracted.dot(dRefracted);
 
             if(brokenRay > e){
-                Ray refractedRay = new Ray(p, dRefracted);
-
-                Color recursiveColor = recursiveRaytrace(refractedRay, objects, light, depth - 1);
-                recursiveColor = recursiveColor.scaled(material.kTransmissive);
-                color = color.plus(recursiveColor);
+                color = computeRefraction(p, dRefracted, objects, light, depth, material, color);
             } else {
                 // calculate new ray and call recursiveRaytrace again
-                Vector3d dReflected = d.minus(n.scaled(2 * d.dot(n)));
-
-                Ray reflectedRay = new Ray(p, dReflected);
-
-                Color recursiveColor = recursiveRaytrace(reflectedRay, objects, light, depth - 1);
-                recursiveColor = recursiveColor.scaled(intersectionObject.material.kSpecular);
-                color = color.plus(recursiveColor);
+                color = computeReflection(p, d, n, objects, light, depth, intersectionObject.material, color);
             }
         } else {
             // calculate new ray and call recursiveRaytrace again
-            Vector3d dReflected = d.minus(n.scaled(2 * d.dot(n)));
-
-            Ray reflectedRay = new Ray(p, dReflected);
-
-            Color recursiveColor = recursiveRaytrace(reflectedRay, objects, light, depth - 1);
-            recursiveColor = recursiveColor.scaled(intersectionObject.material.kSpecular);
-            color = color.plus(recursiveColor);
+            color = computeReflection(p, d, n, objects, light, depth, intersectionObject.material, color);
         }
 
         return color;
+    }
+
+    Color computeRefraction(Vector3d hitPoint, Vector3d direction, List<Sphere> objects, Light light, int depth,
+                            RefractiveMaterial material, Color color){
+        Ray refractedRay = new Ray(hitPoint, direction);
+
+        Color recursiveColor = recursiveRaytrace(refractedRay, objects, light, depth - 1);
+        recursiveColor = recursiveColor.scaled(material.kTransmissive);
+        return color.plus(recursiveColor);
+    }
+
+    Color computeReflection(Vector3d hitPoint, Vector3d direction, Vector3d normal, List<Sphere> objects, Light light, int depth,
+                            Material material, Color color){
+        Vector3d dReflected = direction.minus(normal.scaled(2 * direction.dot(normal)));
+
+        Ray reflectedRay = new Ray(hitPoint, dReflected);
+
+        Color recursiveColor = recursiveRaytrace(reflectedRay, objects, light, depth - 1);
+        recursiveColor = recursiveColor.scaled(material.kSpecular);
+        return color.plus(recursiveColor);
     }
 
     boolean inShadow(Vector3d p, List<Sphere> objects, Light light){
