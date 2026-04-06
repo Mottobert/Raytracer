@@ -25,29 +25,55 @@ public class Raytracer extends JFrame {
 
         if(intersectionObject == null){
             return new Color(0, 0, 0.92); // background color
-        } else {
-            Color color = new Color(0, 0, 0);
-            Vector3d p = ray.at(tMin);
+        }
 
-            // If point is in shadow color stays at black
-            // If point is not in shadow we calculate the color
-            if(!inShadow(p, objects, light)){
-                color = intersectionObject.shading(p, light, ray.direction);
+        Color color = new Color(0, 0, 0);
+        Vector3d p = ray.at(tMin);
+
+        // If point is in shadow color stays at black
+        // If point is not in shadow we calculate the color
+        if(!inShadow(p, objects, light)){
+            color = intersectionObject.shading(p, light, ray.direction);
+        }
+
+        Vector3d d = ray.direction.normalized();
+        Vector3d n = intersectionObject.normal(p).normalized();
+
+        if(intersectionObject.material instanceof RefractiveMaterial){
+            double e = 0.0001;
+            RefractiveMaterial material = (RefractiveMaterial)intersectionObject.material;
+            Vector3d dRefracted = d.refract(n, material.refractiveIndex);
+
+            double brokenRay = dRefracted.dot(dRefracted);
+
+            if(brokenRay > e){
+                Ray refractedRay = new Ray(p, dRefracted);
+
+                Color recursiveColor = recursiveRaytrace(refractedRay, objects, light, depth - 1);
+                recursiveColor = recursiveColor.scaled(material.kTransmissive);
+                color = color.plus(recursiveColor);
+            } else {
+                // calculate new ray and call recursiveRaytrace again
+                Vector3d dReflected = d.minus(n.scaled(2 * d.dot(n)));
+
+                Ray reflectedRay = new Ray(p, dReflected);
+
+                Color recursiveColor = recursiveRaytrace(reflectedRay, objects, light, depth - 1);
+                recursiveColor = recursiveColor.scaled(intersectionObject.material.kSpecular);
+                color = color.plus(recursiveColor);
             }
-
-            Vector3d d = ray.direction.normalized();
-            Vector3d n = intersectionObject.normal(p).normalized();
-
+        } else {
+            // calculate new ray and call recursiveRaytrace again
             Vector3d dReflected = d.minus(n.scaled(2 * d.dot(n)));
 
-            Ray reflected = new Ray(p, dReflected);
+            Ray reflectedRay = new Ray(p, dReflected);
 
-            Color recursiveColor = recursiveRaytrace(reflected, objects, light, depth - 1);
+            Color recursiveColor = recursiveRaytrace(reflectedRay, objects, light, depth - 1);
             recursiveColor = recursiveColor.scaled(intersectionObject.material.kSpecular);
             color = color.plus(recursiveColor);
-
-            return color;
         }
+
+        return color;
     }
 
     boolean inShadow(Vector3d p, List<Sphere> objects, Light light){
@@ -55,6 +81,10 @@ public class Raytracer extends JFrame {
         Ray shadowRay = new Ray(p, l);
 
         for(Sphere object : objects){
+            if(object.material instanceof RefractiveMaterial){
+                continue;
+            }
+
             if(object.intersection(shadowRay) >= 0){
                 return true;
             }
@@ -84,6 +114,16 @@ public class Raytracer extends JFrame {
                 objects.add(new Sphere(new Vector3d(-0.5, 0, 0.25), 0.25, new Material(
                         new Color(1, 0, 0), 0.8, 25)));
 
+                RefractiveMaterial refractiveMaterial = new RefractiveMaterial(new Color(0, 0, 0), 1, 150,
+                        1, 1.5);
+                Sphere transparentSphere = new Sphere(new Vector3d(0.25, 0, 0), 0.2, refractiveMaterial);
+                objects.add(transparentSphere);
+
+                RefractiveMaterial refractiveMaterial2 = new RefractiveMaterial(new Color(0, 0, 0), 1,
+                        150, 1, 1/1.5);
+                Sphere innerSphere = new Sphere(new Vector3d(0.25, 0, 0), 0.18, refractiveMaterial2);
+                objects.add(innerSphere);
+
                 // - Lichtquelle erstellen
                 Light light = new Light(new Vector3d(0,2,-1));
 
@@ -99,7 +139,7 @@ public class Raytracer extends JFrame {
                         Ray ray = new Ray(camera, normalizedDirection);
 
                         // - Strahl gegen Objekt(e) testen
-                        Color c = recursiveRaytrace(ray, objects, light, 5);
+                        Color c = recursiveRaytrace(ray, objects, light, 10);
 
                         // - Pixel ggf. einfaerben
                         g.setColor(c.toAwtColor());

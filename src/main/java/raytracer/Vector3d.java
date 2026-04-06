@@ -56,6 +56,21 @@ public class Vector3d {
         return n.scaled(2 * dot).minus(this);
     }
 
+    public Vector3d refract(Vector3d normal, double r){
+        double d = dot(normal);
+        if(d < 0) { // incoming
+            r = 1 / r;
+        } else {
+            normal = normal.scaled(-1);
+            d =- d;
+        }
+
+        double w = -r * d;
+        double k = Math.sqrt(1 + (w-r) * (w+r));
+
+        return scaled(r).plus(normal.scaled(w-k));
+    }
+
     public String toString(){
         return "(" + this.x + ", " + this.y + ", " + this.z + ")";
     }

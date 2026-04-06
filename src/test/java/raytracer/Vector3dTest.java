@@ -88,4 +88,22 @@ class Vector3dTest {
 
         assertEquals("(0.7071067811865475, 0.7071067811865475, 0.0)", l.reflect(n).toString());
     }
+
+    @Test
+    void testRefract() {
+        Vector3d n = new Vector3d(0, 1, 0);
+        Vector3d d = new Vector3d(1, -1, 0).normalized();
+
+        assertEquals(45.00000000000001, Math.toDegrees(Math.acos(-d.dot(n))));
+
+        Vector3d refractedRayIncoming = d.refract(n, 1.5);
+
+        assertEquals("(0.4714045207910316, -0.8819171036881969, 0.0)", refractedRayIncoming.toString());
+
+        assertEquals(28.125505702055708, Math.toDegrees(Math.acos(-refractedRayIncoming.dot(n))));
+
+        assertEquals("(0.7071067811865475, -0.7071067811865477, 0.0)", refractedRayIncoming.refract(n.scaled(-1), 1.5).toString());
+
+        assertEquals("(0.7071067811865475, -0.7071067811865477, 0.0)", refractedRayIncoming.refract(n, 1/1.5).toString());
+    }
 }
