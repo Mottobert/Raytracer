@@ -1,9 +1,9 @@
 package raytracer;
 
 public class Material {
-    protected Color kDiffuse;
-    double kSpecular;
-    double shininess;
+    protected final Color kDiffuse;
+    public final double kSpecular;
+    public final double shininess;
 
     public Material(Color kDiffuse, double kSpecular, double shininess){
         this.kDiffuse = kDiffuse;

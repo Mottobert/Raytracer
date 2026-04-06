@@ -1,9 +1,9 @@
 package raytracer;
 
 public class CheckeredMaterial extends Material{
-    Color kDiffuse2;
-    int repeatU;
-    int repeatV;
+    public final Color kDiffuse2;
+    public final int repeatU;
+    public final int repeatV;
 
     public CheckeredMaterial(Color kDiffuse, double kSpecular, double shininess, Color kDiffuse2, int repeatU, int repeatV){
         super(kDiffuse, kSpecular, shininess);

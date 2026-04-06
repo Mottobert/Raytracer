@@ -1,7 +1,9 @@
 package raytracer;
 
 public class Vector3d {
-    double x, y, z;
+    public final double x;
+    public final double y;
+    public final double z;
 
     public Vector3d(double x, double y,double z){
         this.x = x;

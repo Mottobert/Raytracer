@@ -1,9 +1,9 @@
 package raytracer;
 
 public class Sphere {
-    Vector3d center;
-    double radius;
-    Material material;
+    public final Vector3d center;
+    public final double radius;
+    public final Material material;
 
     public Sphere(Vector3d center, double radius, Material material){
         this.center = center;
