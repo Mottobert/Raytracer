@@ -48,11 +48,7 @@ public class Sphere {
 
         Color color = this.material.getDiffuseColor(uv[0], uv[1]);
 
-        return new Color(
-                color.r * iDiffuse,
-                color.g * iDiffuse,
-                color.b * iDiffuse
-        );
+        return color.scaled(iDiffuse);
     }
 
     public Color specularShading(Vector3d normal, Vector3d light, Vector3d view){
@@ -76,11 +72,7 @@ public class Sphere {
         Color dColor = diffuseShading(n, l);
         Color sColor = specularShading(n, l, view);
 
-        return new Color(
-                dColor.r + sColor.r,
-                dColor.g + sColor.g,
-                dColor.b + sColor.b
-        );
+        return dColor.plus(sColor);
     }
 
     public double[] makeUVs(Vector3d normal){
