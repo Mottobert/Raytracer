@@ -1,3 +1,7 @@
+/**
+ * @author Max Otto - 867497
+ */
+
 package raytracer;
 
 import org.junit.jupiter.api.Test;

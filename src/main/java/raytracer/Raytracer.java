@@ -1,3 +1,7 @@
+/**
+ * @author Max Otto - 867497
+ */
+
 package raytracer;
 
 import javax.swing.JFrame;
