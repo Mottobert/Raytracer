@@ -21,8 +21,13 @@ For each pixel, a primary ray is shot out from the camera into the scene. The ra
 The recursion depth limits how many times rays are reflected or refracted.
 
 ## Running the Project
-The project is using Maven as a build system and was created using the IntelliJ IDEA IDE. 
-To run the project compile and run the Raytracer class. A window will open and render the scene pixel by pixel.
+The project is using Maven as a build system and was created using the IntelliJ IDEA IDE.
+
+1. Run ```mvn package``` in the root directory of the project.
+2. A .jar file is created in the target-directory. 
+3. Start the .jar file with ```java -jar /target/snapshot.jar``` (filename needs to be replaced)
+
+A window will open and render the scene pixel by pixel.
 
 ## Notes
 - In the test folder you can find some test classes to verify the methods of the classes are working as intended.
